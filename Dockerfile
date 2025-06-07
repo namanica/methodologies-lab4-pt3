@@ -1,20 +1,23 @@
-# Base image
-FROM node:20
+# Use a lightweight Node.js image
+FROM node:20-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
 
-# Copy package files
+# Install build tools if needed (optional, для деяких нативних модулів)
+# RUN apk add --no-cache python3 g++ make
+
+# Copy package.json and package-lock.json first
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies (using npm ci for clean install)
+RUN npm ci
 
-# Bundle app source
+# Copy app source code
 COPY . .
 
-# Expose port
+# Expose application port
 EXPOSE 3000
 
-# Run the application
+# Start the app
 CMD ["npm", "start"]
